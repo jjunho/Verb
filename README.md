@@ -1,1 +1,1 @@
-# Verb - Conjugation of Portuguese Verbs
+# Verb - Morphology of Portuguese Regular Verbs
