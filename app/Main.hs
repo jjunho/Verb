@@ -1,10 +1,23 @@
+-- Copyright 2024 jjunho
+--
+-- Licensed under the Apache License, Version 2.0 (the "License");
+-- you may not use this file except in compliance with the License.
+-- You may obtain a copy of the License at
+--
+--     http://www.apache.org/licenses/LICENSE-2.0
+--
+-- Unless required by applicable law or agreed to in writing, software
+-- distributed under the License is distributed on an "AS IS" BASIS,
+-- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+-- See the License for the specific language governing permissions and
+-- limitations under the License.
+
 {-# LANGUAGE OverloadedStrings #-}
 
 module Main where
 
 import qualified Data.Text              as T
 import           Lucid
--- import           Lucid.Html5
 import qualified NLP.Morphology.PT.Verb as V
 import qualified Web.Scotty             as Scotty
 
@@ -14,27 +27,45 @@ main = Scotty.scotty 8123 $ do
     Scotty.html $ renderText noVerbPage
 
   Scotty.get "/p/:citation" $ do
-    c <- Scotty.param "citation"
+    c <- Scotty.captureParam "citation"
     Scotty.html . renderText $ pageComplete c
 
   Scotty.get "/s/:citation" $ do
-    c <- Scotty.param "citation"
+    c <- Scotty.captureParam "citation"
     Scotty.html . renderText $ pageShallowOrth c
 
   Scotty.get "/:citation" $ do
-    c <- Scotty.param "citation"
+    c <- Scotty.captureParam "citation"
     Scotty.html . renderText $ pageOrth c
 
-
+hero   :: Html () -> Html ()
 hero    = section_ [class_ "hero is-dark is-bold"] . div_ [class_ "hero-body"] . div_ [class_ "container"] . h1Title
+
+h1Title :: Html () -> Html ()
 h1Title = h1_ [class_ "title is-1"]
+
+box     :: Html () -> Html ()
 box     = div_ [class_ "box"]
+
+h1p     :: Html () -> Html ()
 h1p     = p_ [class_ "title is-2"]
+
+h2p     :: Html () -> Html ()
 h2p     = p_ [class_ "title is-3"]
+
+h3p     :: Html () -> Html ()
 h3p     = p_ [class_ "title is-4"]
+
+h1k     :: Html () -> Html ()
 h1k     = p_ [class_ "subtitle is-4"]
+
+h2k     :: Html () -> Html ()
 h2k     = p_ [class_ "subtitle is-5"]
+
+h3k     :: Html () -> Html ()
 h3k     = p_ [class_ "subtitle is-6"]
+
+section :: Html () -> Html ()
 section = section_ [class_ "section"] . div_ [class_ "container"]
 
 pgHead :: Html ()
