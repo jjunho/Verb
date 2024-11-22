@@ -24,6 +24,7 @@ dependencies:
 - text
 - scotty
 - lucid
+- time
 
 library:
   source-dirs: src

@@ -1,10 +1,10 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.33.0.
+-- This file has been generated from package.yaml by hpack version 0.37.0.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: b5934542b8ac13fd30e07e37ef8112274673eff3539b958db9b5de87412a0078
+-- hash: e8cd67fd405c0cf58f552e5dc38ab0b846cc4018bce3979dc9e11dd754abc498
 
 name:           Verb
 version:        0.1.0.0
@@ -41,6 +41,7 @@ library
     , lucid
     , scotty
     , text
+    , time
   default-language: Haskell2010
 
 executable Verb-exe
@@ -56,6 +57,7 @@ executable Verb-exe
     , lucid
     , scotty
     , text
+    , time
   default-language: Haskell2010
 
 test-suite Verb-test
@@ -72,4 +74,5 @@ test-suite Verb-test
     , lucid
     , scotty
     , text
+    , time
   default-language: Haskell2010
