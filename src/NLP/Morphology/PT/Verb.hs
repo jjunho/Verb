@@ -1,4 +1,4 @@
--- Copyright 2019 jjunho
+-- Copyright 2024 jjunho
 --
 -- Licensed under the Apache License, Version 2.0 (the "License");
 -- you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ module NLP.Morphology.PT.Verb (
   , Tense(..)
   , Paradigm(..)
   , VForm
-  -- , VForm
   , mkParadigm
   , mkTense
   , deep
@@ -31,7 +30,6 @@ module NLP.Morphology.PT.Verb (
   , shallowOrth
   , orthMorphs
   , orth
-  -- , txt
   , Txt(..)
   , bounds
   , (<$$>)
