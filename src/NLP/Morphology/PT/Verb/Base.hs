@@ -11,7 +11,6 @@
 -- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
-
 {-# LANGUAGE OverloadedStrings #-}
 
 module NLP.Morphology.PT.Verb.Base where
@@ -40,11 +39,12 @@ nullForm = "---"
 
 type Citation = Text
 
-data Root
-  = Root { rootType :: RootType
-         , root     :: Text
-         , orthRoot :: Text
-         }
+data Root =
+  Root
+    { rootType :: RootType
+    , root     :: Text
+    , orthRoot :: Text
+    }
   deriving (Show, Eq)
 
 data ThematicVowel
@@ -117,41 +117,47 @@ getRoot = T.dropEnd 2 . T.toUpper
 
 mkRoot :: Citation -> Root
 mkRoot c
-  | suffix "CAR"  = Root CQU r (chgR CQU r)
+  | suffix "CAR" = Root CQU r (chgR CQU r)
   | suffix "QUER" = Root QUC r (chgR GUG r)
   | suffix "QUIR" = Root QUC r (chgR GUG r)
-  | suffix "GAR"  = Root GGU r (chgR GGU r)
+  | suffix "GAR" = Root GGU r (chgR GGU r)
   | suffix "GUER" = Root GUG r (chgR GUG r)
   | suffix "GUIR" = Root GUG r (chgR GUG r)
-  | suffix "ÇAR"  = Root ÇC  r (chgR ÇC  r)
-  | suffix "CER"  = Root CÇ  r (chgR CÇ  r)
-  | suffix "CIR"  = Root CÇ  r (chgR CÇ  r)
-  | suffix "GER"  = Root GJ  r (chgR GJ  r)
-  | suffix "GIR"  = Root GJ  r (chgR GJ  r)
-  | otherwise     = Root Reg r r
+  | suffix "ÇAR" = Root ÇC r (chgR ÇC r)
+  | suffix "CER" = Root CÇ r (chgR CÇ r)
+  | suffix "CIR" = Root CÇ r (chgR CÇ r)
+  | suffix "GER" = Root GJ r (chgR GJ r)
+  | suffix "GIR" = Root GJ r (chgR GJ r)
+  | otherwise = Root Reg r r
   where
-    c'       = T.toUpper c
-    r        = getRoot c'
+    c' = T.toUpper c
+    r = getRoot c'
     suffix l = l `T.isSuffixOf` c'
 
 chgR :: RootType -> Text -> Text
-chgR rt r = case rt of
-  Reg -> r
-  Irr -> r
-  CQU -> (<> "QU") $ d 1 r
-  QUC -> (<> "C")  $ d 2 r
-  GGU -> (<> "GU") $ d 1 r
-  GUG -> (<> "G")  $ d 2 r
-  ÇC  -> (<> "C")  $ d 1 r
-  CÇ  -> (<> "Ç")  $ d 1 r
-  GJ  -> (<> "J")  $ d 1 r
- where d = T.dropEnd
+chgR rt r =
+  case rt of
+    Reg -> r
+    Irr -> r
+    CQU -> (<> "QU") $ d 1 r
+    QUC -> (<> "C") $ d 2 r
+    GGU -> (<> "GU") $ d 1 r
+    GUG -> (<> "G") $ d 2 r
+    ÇC  -> (<> "C") $ d 1 r
+    CÇ  -> (<> "Ç") $ d 1 r
+    GJ  -> (<> "J") $ d 1 r
+  where
+    d = T.dropEnd
 
 mkThematicVowel :: Citation -> ThematicVowel
-mkThematicVowel c = if ocirc $ tv c then O else tv' c
-  where tv = T.head . T.takeEnd 2 . T.toLower
-        tv' = maybe Z toEnum . flip elemIndex "aeiou" . tv
-        ocirc = ('ô' ==)
+mkThematicVowel c =
+  if ocirc $ tv c
+    then O
+    else tv' c
+  where
+    tv = T.head . T.takeEnd 2 . T.toLower
+    tv' = maybe Z toEnum . flip elemIndex "aeiou" . tv
+    ocirc = ('ô' ==)
 
 takeFrom :: Enum a => [b] -> a -> b
 takeFrom ms = (ms !!) . fromEnum
@@ -168,15 +174,22 @@ tv = gw "A E I O U 0"
 
 pns, prs, des, imp, prf :: PersonNumber -> Text
 pns = gw "0 S   0 MOS IS   M"
+
 prs = gw "O S   0 MOS IS   M"
+
 des = gw "0 S   0 MOS DES  M"
+
 imp = gw "X 0   X X   I    X"
+
 prf = gw "I STE U MOS STES M"
 
 mta, mte, mta2, mte2 :: MoodTense -> Text
-mta  = gw "0 0 VA RA 0 0 0 SE R 0 0 R R NDO D"
-mte  = gw ": : VE RE : : : :  : : : : : :   :"
+mta = gw "0 0 VA RA 0 0 0 SE R 0 0 R R NDO D"
+
+mte = gw ": : VE RE : : : :  : : : : : :   :"
+
 mta2 = gw ": : A  :  : : : :  : : : : : :   T"
+
 mte2 = gw ": : E  :  : : : :  : : : : : :   :"
 
 gen :: Gender -> Text

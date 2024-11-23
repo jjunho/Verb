@@ -11,7 +11,6 @@
 -- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
-
 {-# LANGUAGE OverloadedStrings #-}
 
 module Main where
@@ -22,58 +21,53 @@ import qualified NLP.Morphology.PT.Verb as V
 import qualified Web.Scotty             as Scotty
 
 main :: IO ()
-main = Scotty.scotty 8123 $ do
-  Scotty.get "/" $
-    Scotty.html $ renderText noVerbPage
+main =
+  Scotty.scotty 8123 $ do
+    Scotty.get "/" $ Scotty.html $ renderText noVerbPage
+    Scotty.get "/p/:citation" $ do
+      c <- Scotty.captureParam "citation"
+      Scotty.html . renderText $ pageComplete c
+    Scotty.get "/s/:citation" $ do
+      c <- Scotty.captureParam "citation"
+      Scotty.html . renderText $ pageShallowOrth c
+    Scotty.get "/:citation" $ do
+      c <- Scotty.captureParam "citation"
+      Scotty.html . renderText $ pageOrth c
 
-  Scotty.get "/p/:citation" $ do
-    c <- Scotty.captureParam "citation"
-    Scotty.html . renderText $ pageComplete c
+hero, h1Title, box, h1p, h2p, h3p, h1k, h2k, h3k, section :: Html () -> Html ()
+hero =
+  section_ [class_ "hero is-dark is-bold"] .
+  div_ [class_ "hero-body"] . div_ [class_ "container"] . h1Title
 
-  Scotty.get "/s/:citation" $ do
-    c <- Scotty.captureParam "citation"
-    Scotty.html . renderText $ pageShallowOrth c
-
-  Scotty.get "/:citation" $ do
-    c <- Scotty.captureParam "citation"
-    Scotty.html . renderText $ pageOrth c
-
-hero   :: Html () -> Html ()
-hero    = section_ [class_ "hero is-dark is-bold"] . div_ [class_ "hero-body"] . div_ [class_ "container"] . h1Title
-
-h1Title :: Html () -> Html ()
 h1Title = h1_ [class_ "title is-1"]
 
-box     :: Html () -> Html ()
-box     = div_ [class_ "box"]
+box = div_ [class_ "box"]
 
-h1p     :: Html () -> Html ()
-h1p     = p_ [class_ "title is-2"]
+h1p = p_ [class_ "title is-2"]
 
-h2p     :: Html () -> Html ()
-h2p     = p_ [class_ "title is-3"]
+h2p = p_ [class_ "title is-3"]
 
-h3p     :: Html () -> Html ()
-h3p     = p_ [class_ "title is-4"]
+h3p = p_ [class_ "title is-4"]
 
-h1k     :: Html () -> Html ()
-h1k     = p_ [class_ "subtitle is-4"]
+h1k = p_ [class_ "subtitle is-4"]
 
-h2k     :: Html () -> Html ()
-h2k     = p_ [class_ "subtitle is-5"]
+h2k = p_ [class_ "subtitle is-5"]
 
-h3k     :: Html () -> Html ()
-h3k     = p_ [class_ "subtitle is-6"]
+h3k = p_ [class_ "subtitle is-6"]
 
-section :: Html () -> Html ()
 section = section_ [class_ "section"] . div_ [class_ "container"]
 
 pgHead :: Html ()
-pgHead  = head_ $ do
-  meta_ [charset_ "utf-8"]
-  meta_ [name_ "viewport", content_ "width=device-width, initial-scale=1"]
-  link_ [rel_ "stylesheet", href_ "https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css"]
-  title_ "Conjuga\231\227o de verbos em português"
+pgHead =
+  head_ $ do
+    meta_ [charset_ "utf-8"]
+    meta_ [name_ "viewport", content_ "width=device-width, initial-scale=1"]
+    link_
+      [ rel_ "stylesheet"
+      , href_
+          "https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css"
+      ]
+    title_ "Conjuga\231\227o de verbos em português"
 
 noVerbPage :: Html ()
 noVerbPage =
@@ -124,21 +118,25 @@ formBox p k = do
   h1k k
 
 moodBox :: Html () -> Html () -> Html () -> Html ()
-moodBox p k t = box $ do
-  h2p p
-  h2k k
-  t
+moodBox p k t =
+  box $ do
+    h2p p
+    h2k k
+    t
 
 tenseBox :: Html () -> Html () -> Html () -> Html ()
-tenseBox p k t = box $ do
-  h3p p
-  h3k k
-  t
+tenseBox p k t =
+  box $ do
+    h3p p
+    h3k k
+    t
 
 footer :: Html ()
-footer = div_ [class_ "footer"] $ p_ [class_ "has-text-centered"] "Copyright (C) 2019 Prof. Juliano"
+footer =
+  div_ [class_ "footer"] $
+  p_ [class_ "has-text-centered"] "Copyright (C) 2019 Prof. Juliano"
 
-page :: T.Text -> (V.MoodTense -> Html()) -> Html ()
+page :: T.Text -> (V.MoodTense -> Html ()) -> Html ()
 page c tvt =
   doctypehtml_ $ do
     pgHead
@@ -153,7 +151,10 @@ page c tvt =
         moodBox "Infinitivo" "부정사(不定詞) [명사(名詞)]" (tvt V.INF)
         moodBox "Infinitivo Pessoal" "인칭부정사(人稱不定詞) [명사(名詞)]" (tvt V.INFP)
         moodBox "Gerúndio" "능동태 현재분사(能動態 現在分詞) [부사(副詞)/형용사(形容詞)]" (tvt V.GER)
-        moodBox "Particípio Passivo Passado" "수동태 과거분사(受動態 過去分詞) [형용사(形容詞)/부사(副詞)]" (tvt V.PPP)
+        moodBox
+          "Particípio Passivo Passado"
+          "수동태 과거분사(受動態 過去分詞) [형용사(形容詞)/부사(副詞)]"
+          (tvt V.PPP)
     footer
 
 indicative :: (V.MoodTense -> Html ()) -> Html ()
@@ -180,14 +181,27 @@ tense :: V.Citation -> V.MoodTense -> V.Tense V.VForm
 tense = V.takeFrom . V.unParadigm . V.mkParadigm
 
 vdso :: V.VForm -> [T.Text]
-vdso v = [ a
-         , if b == a then "" else b
-         , if c == b then "" else c
-         , if d == c then "" else d
-         , if e == d then "" else e
-         , if f == e then "" else f
-         , if g == f then "" else g
-         ]
+vdso v =
+  [ a
+  , if b == a
+      then ""
+      else b
+  , if c == b
+      then ""
+      else c
+  , if d == c
+      then ""
+      else d
+  , if e == d
+      then ""
+      else e
+  , if f == e
+      then ""
+      else f
+  , if g == f
+      then ""
+      else g
+  ]
   where
     a = V.txt v
     b = (V.txt . V.suppletiveForms) v
@@ -198,11 +212,18 @@ vdso v = [ a
     g = (V.txt . V.orth) v
 
 so :: V.VForm -> [T.Text]
-so v = [ a
-       , if b == a then "" else b
-       , if c == b then "" else c
-       , if d == c then "" else d
-       ]
+so v =
+  [ a
+  , if b == a
+      then ""
+      else b
+  , if c == b
+      then ""
+      else c
+  , if d == c
+      then ""
+      else d
+  ]
   where
     a = V.txt v
     b = (V.txt . V.shallowOrth) v
@@ -222,7 +243,8 @@ os :: V.Tense V.VForm -> [[T.Text]]
 os = V.unTense . fmap o
 
 table :: [[T.Text]] -> Html ()
-table t = table_ [class_ "table is-hoverable is-fullwidth is-striped"] $ mapM_ row t
+table t =
+  table_ [class_ "table is-hoverable is-fullwidth is-striped"] $ mapM_ row t
 
 row :: [T.Text] -> Html ()
 row xs = tr_ [] $ mapM_ (td_ [] . toHtml) xs
