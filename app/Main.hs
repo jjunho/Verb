@@ -19,10 +19,12 @@ import qualified Data.Text              as T
 import           Lucid
 import qualified NLP.Morphology.PT.Verb as V
 import qualified Web.Scotty             as Scotty
+import Network.Wai.Middleware.RequestLogger (logStdoutDev)
 
 main :: IO ()
 main =
   Scotty.scotty 8123 $ do
+    Scotty.middleware logStdoutDev
     Scotty.get "/" $ Scotty.html $ renderText noVerbPage
     Scotty.get "/p/:citation" $ do
       c <- Scotty.captureParam "citation"
@@ -204,12 +206,12 @@ vdso v =
   ]
   where
     a = V.txt v
-    b = (V.txt . V.suppletiveForms) v
-    c = (V.txt . V.deep) v
-    d = (V.txt . V.shallow) v
-    e = (V.txt . V.shallowOrth) v
-    f = (V.txt . V.orthMorphs) v
-    g = (V.txt . V.orth) v
+    b = V.txt $ V.suppletiveForms v
+    c = V.txt $ V.deep v
+    d = V.txt $ V.shallow v
+    e = V.txt $ V.shallowOrth v
+    f = V.txt $ V.orthMorphs v
+    g = V.txt $ V.orth v
 
 so :: V.VForm -> [T.Text]
 so v =
@@ -226,9 +228,9 @@ so v =
   ]
   where
     a = V.txt v
-    b = (V.txt . V.shallowOrth) v
-    c = (V.txt . V.orthMorphs) v
-    d = (V.txt . V.orth) v
+    b = V.txt $ V.shallowOrth v
+    c = V.txt $ V.orthMorphs v
+    d = V.txt $ V.orth v
 
 o :: V.VForm -> [T.Text]
 o v = [(V.txt . V.orth) v]

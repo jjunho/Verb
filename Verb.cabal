@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: b1058e4c8172f83fc9b3341c484b8318cd4df6712666584cd2febe98c6a002e0
+-- hash: 9edbbcbfba5f57e8d925db5f3965b1a7d3dc03dde505ae74463b9fc22249f8b1
 
 name:           Verb
 version:        0.1.0.0
@@ -39,6 +39,7 @@ library
     , scotty
     , text
     , time
+    , wai-extra
   default-language: Haskell2010
 
 executable Verb-exe
@@ -56,6 +57,7 @@ executable Verb-exe
     , scotty
     , text
     , time
+    , wai-extra
   default-language: Haskell2010
 
 test-suite Verb-test
@@ -76,4 +78,5 @@ test-suite Verb-test
     , scotty
     , text
     , time
+    , wai-extra
   default-language: Haskell2010
