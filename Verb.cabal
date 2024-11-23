@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: e8cd67fd405c0cf58f552e5dc38ab0b846cc4018bce3979dc9e11dd754abc498
+-- hash: 96adbcc60980b0aadbe21fe48b3259e1a2a3080a15d4c7ebc03eb5be77a520cc
 
 name:           Verb
 version:        0.1.0.0
@@ -26,18 +26,13 @@ source-repository head
   location: https://github.com/jjunho/Verb
 
 library
-  exposed-modules:
-      NLP.Morphology.PT.Verb
-      NLP.Morphology.PT.Verb.Base
-      NLP.Morphology.PT.Verb.DSO
-      NLP.Morphology.PT.Verb.Model
-      NLP.Morphology.PT.Verb.Txt
   other-modules:
       Paths_Verb
   hs-source-dirs:
       src
   build-depends:
       base >=4.7 && <5
+    , hspec
     , lucid
     , scotty
     , text
@@ -54,6 +49,7 @@ executable Verb-exe
   build-depends:
       Verb
     , base >=4.7 && <5
+    , hspec
     , lucid
     , scotty
     , text
@@ -64,6 +60,8 @@ test-suite Verb-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      RootSpec
+      VFormSpec
       Paths_Verb
   hs-source-dirs:
       test
@@ -71,6 +69,7 @@ test-suite Verb-test
   build-depends:
       Verb
     , base >=4.7 && <5
+    , hspec
     , lucid
     , scotty
     , text
