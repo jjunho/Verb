@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 96adbcc60980b0aadbe21fe48b3259e1a2a3080a15d4c7ebc03eb5be77a520cc
+-- hash: b1058e4c8172f83fc9b3341c484b8318cd4df6712666584cd2febe98c6a002e0
 
 name:           Verb
 version:        0.1.0.0
@@ -26,6 +26,8 @@ source-repository head
   location: https://github.com/jjunho/Verb
 
 library
+  exposed-modules:
+      NLP.Morphology.PT.Verb
   other-modules:
       Paths_Verb
   hs-source-dirs:
